@@ -1,0 +1,89 @@
+# env
+env: cheetah_run
+# IMPORTANT: if action_repeat is used the effective number of env steps needs to be
+# multiplied by action_repeat in the result graphs.
+# This is a common practice for a fair comparison.
+# See the 2nd paragraph in Appendix C of SLAC: https://arxiv.org/pdf/1907.00953.pdf
+# See Dreamer TF2's implementation: https://github.com/danijar/dreamer/blob/02f0210f5991c7710826ca7881f19c64a012290c/dreamer.py#L340
+action_repeat: 4
+# train
+num_train_steps: 1000000
+num_train_iters: 1
+num_seed_steps: 1000
+replay_buffer_capacity: 100000
+seed: 1
+# eval
+eval_frequency: 5000
+num_eval_episodes: 10
+# misc
+log_frequency_step: 10000
+log_save_tb: true
+save_video: true
+device: cuda
+# observation
+image_size: 84
+image_pad: 4
+frame_stack: 3
+# global params
+lr: 1e-3
+batch_size: 512
+exp_dir: debug
+
+debug:
+  trace_mode: check-raise
+#  trace_mode: save
+  verbose: true
+
+task:
+  obs_shape: ???
+  action_shape: ???
+  action_range: ???
+
+# agent configuration
+agent:
+  name: drq
+  class: enlight.rl.algo.sac.SAC
+  params:
+    action_shape: ${task.action_shape}
+    action_range: ${task.action_range}
+    device: ${device}
+    discount: 0.99
+    init_temperature: 0.1
+    actor_lr: ${lr}
+    actor_update_freq: 2
+    critic_lr: ${lr}
+    critic_tau: 0.01
+    critic_target_update_freq: 2
+    log_alpha_lr: ${lr}
+    batch_size: ${batch_size}
+    
+critic:
+  class: enlight.model.dm_control.Critic
+  params:
+    encoder_cfg: ${encoder}
+    action_shape: ${task.action_shape}
+    hidden_dim: 1024
+    hidden_depth: 2
+    
+actor:
+  class: enlight.model.dm_control.Actor
+  params:
+    encoder_cfg: ${encoder}
+    action_shape: ${task.action_shape}
+    hidden_depth: 2
+    hidden_dim: 1024
+    log_std_bounds: [-10, 2]
+    
+encoder:
+  class: enlight.model.dm_control.Encoder
+  params:
+      obs_shape: ${task.obs_shape}
+      feature_dim: 50
+
+
+# hydra configuration
+hydra:
+  name: ${env}
+  run:
+#    dir: ${env:HOME}/model/drq/${now:%Y.%m.%d}/${now:%H%M%S}_${hydra.job.override_dirname}
+    dir: ${env:HOME}/model/drq/${exp_dir}/${hydra.job.override_dirname}
