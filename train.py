@@ -14,6 +14,7 @@ from enlight.utils.tracer import Tracer
 import enlight.utils as U
 from enlight.rl.algo import SAC
 
+import enlight
 # TODO clean up these imports
 from enlight.utils.logger import Logger
 from enlight.utils.video import VideoRecorder
@@ -21,6 +22,11 @@ from enlight.utils.video import VideoRecorder
 from enlight.rl.replay_buffer import ReplayBuffer
 
 torch.backends.cudnn.benchmark = True
+
+
+U.add_class_registry('dmc.Actor', enlight.model.dm_control.Actor)
+U.add_class_registry('dmc.Critic', enlight.model.dm_control.Critic)
+U.add_class_registry('dmc.Encoder', enlight.model.dm_control.Encoder)
 
 
 def apply_debug_settings(cfg):

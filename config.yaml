@@ -58,7 +58,7 @@ agent:
     batch_size: ${batch_size}
     
 critic:
-  class: enlight.model.dm_control.Critic
+  class: dmc.Critic
   params:
     encoder: ${encoder}
     action_shape: ${task.action_shape}
@@ -66,7 +66,7 @@ critic:
     hidden_depth: 2
     
 actor:
-  class: enlight.model.dm_control.Actor
+  class: dmc.Actor
   params:
     encoder: ${encoder}
     action_shape: ${task.action_shape}
@@ -75,7 +75,7 @@ actor:
     log_std_bounds: [-10, 2]
     
 encoder:
-  class: enlight.model.dm_control.Encoder
+  class: dmc.Encoder
   params:
       obs_shape: ${task.obs_shape}
       feature_dim: 50
