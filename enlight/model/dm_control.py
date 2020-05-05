@@ -83,11 +83,11 @@ class Encoder(nn.Module):
 
 class Actor(nn.Module):
     """torch.distributions implementation of an diagonal Gaussian policy."""
-    def __init__(self, encoder_cfg, action_shape, hidden_dim, hidden_depth,
+    def __init__(self, encoder, action_shape, hidden_dim, hidden_depth,
                  log_std_bounds):
         super().__init__()
 
-        self.encoder = hydra.utils.instantiate(encoder_cfg)
+        self.encoder = encoder
 
         self.log_std_bounds = log_std_bounds
         self.trunk = mlp(
@@ -127,10 +127,10 @@ class Actor(nn.Module):
 
 class Critic(nn.Module):
     """Critic network, employes double Q-learning."""
-    def __init__(self, encoder_cfg, action_shape, hidden_dim, hidden_depth):
+    def __init__(self, encoder, action_shape, hidden_dim, hidden_depth):
         super().__init__()
 
-        self.encoder = hydra.utils.instantiate(encoder_cfg)
+        self.encoder = encoder
 
         self.Q1 = mlp(self.encoder.feature_dim + action_shape[0],
                             hidden_dim, 1, hidden_depth)

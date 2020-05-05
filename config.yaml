@@ -60,7 +60,7 @@ agent:
 critic:
   class: enlight.model.dm_control.Critic
   params:
-    encoder_cfg: ${encoder}
+    encoder: ${encoder}
     action_shape: ${task.action_shape}
     hidden_dim: 1024
     hidden_depth: 2
@@ -68,7 +68,7 @@ critic:
 actor:
   class: enlight.model.dm_control.Actor
   params:
-    encoder_cfg: ${encoder}
+    encoder: ${encoder}
     action_shape: ${task.action_shape}
     hidden_depth: 2
     hidden_dim: 1024

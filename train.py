@@ -73,8 +73,13 @@ class Workspace(object):
             float(self.env.action_space.high.max())
         ]
 
-        actor = hydra.utils.instantiate(cfg.actor)
-        critic = hydra.utils.instantiate(cfg.critic)
+        actor = U.recursive_instantiate(cfg.actor)
+        critic = U.recursive_instantiate(cfg.critic)
+
+        # tie conv layers between actor and critic
+        # TODO: address encoder
+        actor.encoder.copy_conv_weights_from(critic.encoder)
+
 
         agent_params = OmegaConf.to_container(cfg.agent.params, resolve=True)
         # agent_params['cfg'] = cfg   # TODO debugging only

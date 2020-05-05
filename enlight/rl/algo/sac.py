@@ -41,10 +41,6 @@ class SAC(object):
         self.critic = critic.to(device)
         self.critic_target = U.clone_model(self.critic)
 
-        # tie conv layers between actor and critic
-        # TODO: address encoder
-        self.actor.encoder.copy_conv_weights_from(self.critic.encoder)
-
         self.log_alpha = torch.tensor(np.log(init_temperature)).to(device)
         self.log_alpha.requires_grad = True
 
